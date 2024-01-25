@@ -14,6 +14,8 @@ int main()
             string val;
             cin >> key >> val;
             Node *x = new Node(key, val);
+            x->left = rbt.TNULL;
+            x->right = rbt.TNULL;
             rbt.insert(x);
             string p = rbt.print(rbt.root);
             // cout<<rbt.root->val<<endl;
@@ -31,10 +33,16 @@ int main()
             string p = rbt.print(rbt.root);
             cout << p << endl;
         }
-        else if (s == "P")
+        else if (s == "Em")
         {
-            string p = rbt.print(rbt.root);
-            cout << p << endl;
+            if (rbt.root->left == nullptr && rbt.root->right == nullptr)
+            {
+                cout << "yes" << endl;
+            }
+            else
+            {
+                cout << "no" << endl;
+            }
         }
         else if (s == "F")
         {
@@ -48,9 +56,26 @@ int main()
             else
                 cout << key << " found" << endl;
         }
-        else if (s == "Q")
+        else if (s == "S")
         {
-            break;
+            cout << rbt.height(rbt.root) << endl;
+        }
+        else if (s == "Itr")
+        {
+            string p = rbt.inOrderHelper(rbt.root);
+            cout << p << endl;
+        }
+        else if (s == "Clr")
+        {
+            int a = rbt.clear(rbt.root);
+            if (a == 1)
+            {
+                cout << "successful" << endl;
+            }
+            else
+            {
+                cout << "unsuccessful" << endl;
+            }
         }
     }
 }

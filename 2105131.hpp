@@ -39,14 +39,29 @@ public:
         TNULL->color = BLACK;
         TNULL->left = nullptr;
         TNULL->right = nullptr;
-        root = nullptr;
+        root = TNULL;
         cout << "RBT end" << endl;
+    }
+    int height(Node *x)
+    {
+        if (x == TNULL)
+            return 0;
+        else
+        {
+            int lheight = height(x->left);
+            int rheight = height(x->right);
+
+            if (lheight > rheight)
+                return (lheight + 1);
+            else
+                return (rheight + 1);
+        }
     }
     void leftRotate(Node *x)
     {
         Node *y = x->right;
         x->right = y->left;
-        if (y->left != nullptr)
+        if (y->left != TNULL)
             y->left->parent = x;
         y->parent = x->parent;
         if (x->parent == nullptr)
@@ -62,7 +77,7 @@ public:
     {
         Node *y = x->left;
         x->left = y->right;
-        if (y->right != nullptr)
+        if (y->right != TNULL)
             y->right->parent = x;
         y->parent = x->parent;
         if (x->parent == nullptr)
@@ -80,7 +95,7 @@ public:
         // cout << z->val << endl;
         Node *y = nullptr;
         Node *x = root;
-        while (x != nullptr)
+        while (x != TNULL)
         {
             // cout << x->val << endl;
             y = x;
@@ -96,10 +111,21 @@ public:
             y->left = z;
         else
             y->right = z;
-        z->left = nullptr;
-        z->right = nullptr;
-        z->color = RED;
+        // z->left = nullptr;
+        // z->right = nullptr;
+        // z->color = RED;
         // cout << "here" << endl;
+        if (z->parent == nullptr)
+        {
+            z->color = BLACK;
+            return;
+        }
+
+        if (z->parent->parent == nullptr)
+        {
+            return;
+        }
+
         insertFix(z);
     }
 
@@ -164,6 +190,10 @@ public:
                     }
                 }
             }
+            if (z == root)
+            {
+                break;
+            }
         }
         root->color = BLACK;
     }
@@ -189,7 +219,7 @@ public:
 
     Node *minimum(Node *x)
     {
-        while (x != nullptr && x->left != nullptr)
+        while (/*x != nullptr &&*/ x->left != TNULL)
             x = x->left;
         return x;
     }
@@ -197,7 +227,7 @@ public:
     Node *find(int key)
     {
         Node *x = root;
-        while (x != nullptr)
+        while (x != TNULL)
         {
             if (key < x->val)
                 x = x->left;
@@ -217,69 +247,63 @@ public:
             if (x == x->parent->left)
             {
                 Node *w = x->parent->right;
-                if (w != nullptr)
+                if (w->color == RED)
                 {
-                    if (w->color == RED)
+                    w->color = BLACK;
+                    x->parent->color = RED;
+                    leftRotate(x->parent);
+                    w = x->parent->right;
+                }
+                if (w->left->color == BLACK && w->right->color == BLACK)
+                {
+                    w->color = RED;
+                    x = x->parent;
+                }
+                else
+                {
+                    if (w->right->color == BLACK)
                     {
-                        w->color = BLACK;
-                        x->parent->color = RED;
-                        leftRotate(x->parent);
+                        w->left->color = BLACK;
+                        w->color = RED;
+                        rightRotate(w);
                         w = x->parent->right;
                     }
-                    if (w->left->color == BLACK && w->right->color == BLACK)
-                    {
-                        w->color = RED;
-                        x = x->parent;
-                    }
-                    else
-                    {
-                        if (w->right->color == BLACK)
-                        {
-                            w->left->color = BLACK;
-                            w->color = RED;
-                            rightRotate(w);
-                            w = x->parent->right;
-                        }
-                        w->color = x->parent->color;
-                        x->parent->color = BLACK;
-                        w->right->color = BLACK;
-                        leftRotate(x->parent);
-                        x = root;
-                    }
+                    w->color = x->parent->color;
+                    x->parent->color = BLACK;
+                    w->right->color = BLACK;
+                    leftRotate(x->parent);
+                    x = root;
                 }
             }
             else
             {
                 Node *w = x->parent->left;
-                if (w != nullptr)
+                if (w->color == RED)
                 {
-                    if (w->color == RED)
+                    w->color = BLACK;
+                    x->parent->color = RED;
+                    rightRotate(x->parent);
+                    w = x->parent->left;
+                }
+                if (w->right->color == BLACK && w->left->color == BLACK)
+                {
+                    w->color = RED;
+                    x = x->parent;
+                }
+                else
+                {
+                    if (w->left->color == BLACK)
                     {
-                        w->color = BLACK;
-                        x->parent->color = RED;
-                        rightRotate(x->parent);
+                        w->right->color = BLACK;
+                        w->color = RED;
+                        leftRotate(w);
                         w = x->parent->left;
                     }
-                    if (w->right->color == BLACK && w->left->color == BLACK)
-                    {
-                        w->color = RED;
-                        x = x->parent;
-                    }
-                    else
-                    {
-                        if (w->left->color == BLACK)
-                        {
-                            w->right->color = BLACK;
-                            w->color = RED;
-                            leftRotate(w);
-                            w = x->parent->left;
-                        }
-                        w->color = x->parent->color;
-                        x->parent->color = BLACK;
-                        w->left->color = BLACK;
-                        rightRotate(x->parent);
-                        x = root;
-                    }
+                    w->color = x->parent->color;
+                    x->parent->color = BLACK;
+                    w->left->color = BLACK;
+                    rightRotate(x->parent);
+                    x = root;
                 }
             }
         }
@@ -289,7 +313,7 @@ public:
 
     void Delete(Node *z)
     {
-        if (root == nullptr || z == nullptr)
+        if (root == TNULL || z == TNULL)
         {
             // Tree is empty or node to delete is null
             return;
@@ -298,14 +322,14 @@ public:
 
         Node *y = z;
         COLOR y_original_color = y->color;
-        Node *x = nullptr;
+        Node *x;
 
-        if (z->left == nullptr)
+        if (z->left == TNULL)
         {
             x = z->right;
             transplant(z, z->right);
         }
-        else if (z->right == nullptr)
+        else if (z->right == TNULL)
         {
             x = z->left;
             transplant(z, z->left);
@@ -317,44 +341,62 @@ public:
             x = y->right;
             if (y->parent == z)
             {
-                if (x != nullptr)
-                    x->parent = y;
+                x->parent = y;
             }
             else
             {
                 transplant(y, y->right);
                 y->right = z->right;
-                if (y->right != nullptr)
-                    y->right->parent = y;
+                y->right->parent = y;
             }
             transplant(z, y);
             y->left = z->left;
-            if (y->left != nullptr)
-                y->left->parent = y;
+            y->left->parent = y;
             y->color = z->color;
         }
+
+        delete z;
 
         // Fix the RB tree properties
         if (y_original_color == BLACK)
             deleteFix(x);
+    }
 
-        delete z;
+    string inOrderHelper(Node* node)
+    {
+        ostringstream string;
+        if (node != TNULL)
+        {
+            inOrderHelper(node->left);
+            string << node->val << "⇒"<<node->contains<<endl;
+            inOrderHelper(node->right);
+        }
+    }
+
+    int clear(Node *root)
+    {
+        if (root == TNULL)
+            return 0;
+        clear(root->left);
+        clear(root->right);
+        delete root;
+        return 1;
     }
 
     std::string print(Node *root)
     {
         std::ostringstream string;
-        if (root == nullptr)
+        if (root == TNULL)
         {
             return "";
         }
-        else if (root->left == nullptr && root->right == nullptr)
+        else if (root->left == TNULL && root->right == TNULL)
         {
             string << root->val;
             string << "_";
             string << root->contains;
         }
-        else if (root->left == nullptr && root->right != nullptr)
+        else if (root->left == TNULL && root->right != TNULL)
         {
             string << root->val;
             string << "_";
@@ -363,7 +405,7 @@ public:
             string << print(root->right);
             string << ")";
         }
-        else if (root->left != nullptr && root->right == nullptr)
+        else if (root->left != TNULL && root->right == TNULL)
         {
             string << root->val;
             string << "_";
@@ -373,7 +415,7 @@ public:
             string << ",";
             string << ")";
         }
-        else if (root->left != nullptr && root->right != nullptr)
+        else if (root->left != TNULL && root->right != TNULL)
         {
             string << root->val;
             string << "_";
