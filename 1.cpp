@@ -3,6 +3,8 @@ using namespace std;
 
 int main()
 {
+    freopen("SampleIO/input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
     RBT rbt;
     while (1)
     {
@@ -29,7 +31,7 @@ int main()
             if (x == nullptr)
                 cout << key << " Not found" << endl;
             else
-                rbt.Delete(x);
+                rbt.deleteNode(key);
             string p = rbt.print(rbt.root);
             cout << p << endl;
         }

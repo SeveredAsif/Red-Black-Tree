@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "color.hpp"
 using namespace std;
 
 enum COLOR
@@ -311,18 +312,41 @@ public:
         cout << "deleteFix end" << endl;
     }
 
-    void Delete(Node *z)
+    void deleteNode(int data)
     {
-        if (root == TNULL || z == TNULL)
+        Delete(this->root, data);
+    }
+
+    void Delete(Node *node, int key)
+    {
+        Node *z = TNULL;
+        Node* x;
+        Node * y;
+        cout << "deleting " << endl;
+
+        while (node != TNULL)
         {
-            // Tree is empty or node to delete is null
+            if (node->val == key)
+            {
+                z = node;
+            }
+
+            if (node->val <= key)
+            {
+                node = node->right;
+            }
+            else
+            {
+                node = node->left;
+            }
+        }
+        if (z == TNULL)
+        {
+            cout << "Key not found in the tree" << endl;
             return;
         }
-        cout << "deleting " << z->val << endl;
-
-        Node *y = z;
+        y = z;
         COLOR y_original_color = y->color;
-        Node *x;
 
         if (z->left == TNULL)
         {
@@ -358,17 +382,22 @@ public:
         delete z;
 
         // Fix the RB tree properties
+        cout << y_original_color << endl;
+        cout << BLACK << endl;
         if (y_original_color == BLACK)
+        {
+            cout << "Entering deleteFix" << endl;
             deleteFix(x);
+        }
     }
 
-    string inOrderHelper(Node* node)
+    string inOrderHelper(Node *node)
     {
         ostringstream string;
         if (node != TNULL)
         {
             inOrderHelper(node->left);
-            string << node->val << "⇒"<<node->contains<<endl;
+            string << node->val << "⇒" << node->contains << endl;
             inOrderHelper(node->right);
         }
     }
@@ -392,24 +421,69 @@ public:
         }
         else if (root->left == TNULL && root->right == TNULL)
         {
-            string << root->val;
-            string << "_";
-            string << root->contains;
+            if (root->color == RED)
+            {
+                string << dye::red(root->val);
+                string << dye::red("_");
+                string << dye::red(root->contains);
+                cout << dye::red(root->val);
+                cout << dye::red("_");
+                cout << dye::red(root->contains);
+            }
+            else
+            {
+                string << root->val;
+                string << "_";
+                string << root->contains;
+                cout << root->val;
+                cout << "_";
+                cout << root->contains;
+            }
         }
         else if (root->left == TNULL && root->right != TNULL)
         {
-            string << root->val;
-            string << "_";
-            string << root->contains;
+            if (root->color == RED)
+            {
+                string << dye::red(root->val);
+                string << dye::red("_");
+                string << dye::red(root->contains);
+                cout << dye::red(root->val);
+                cout << dye::red("_");
+                cout << dye::red(root->contains);
+            }
+            else
+            {
+                string << root->val;
+                string << "_";
+                string << root->contains;
+                cout << root->val;
+                cout << "_";
+                cout << root->contains;
+            }
             string << "(,";
             string << print(root->right);
             string << ")";
         }
         else if (root->left != TNULL && root->right == TNULL)
         {
-            string << root->val;
-            string << "_";
-            string << root->contains;
+            if (root->color == RED)
+            {
+                string << dye::red(root->val);
+                string << dye::red("_");
+                string << dye::red(root->contains);
+                cout << dye::red(root->val);
+                cout << dye::red("_");
+                cout << dye::red(root->contains);
+            }
+            else
+            {
+                string << root->val;
+                string << "_";
+                string << root->contains;
+                cout << root->val;
+                cout << "_";
+                cout << root->contains;
+            }
             string << "(";
             string << print(root->left);
             string << ",";
@@ -417,14 +491,30 @@ public:
         }
         else if (root->left != TNULL && root->right != TNULL)
         {
-            string << root->val;
-            string << "_";
-            string << root->contains;
+            if (root->color == RED)
+            {
+                string << dye::red(root->val);
+                string << dye::red("_");
+                string << dye::red(root->contains);
+                cout << dye::red(root->val);
+                cout << dye::red("_");
+                cout << dye::red(root->contains);
+            }
+            else
+            {
+                string << root->val;
+                string << "_";
+                string << root->contains;
+                cout << root->val;
+                cout << "_";
+                cout << root->contains;
+            }
             string << "(";
             string << print(root->left);
             string << ",";
             string << print(root->right);
             string << ")";
+            // std::cout << dye::aqua("Hello, World!") << std::endl;
         }
         return string.str();
     }
