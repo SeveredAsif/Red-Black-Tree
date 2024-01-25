@@ -1,0 +1,15 @@
+
+I 10 Thors
+I 34 Canute
+I 43 Olaf
+I 15 Einer
+I 40 Olmar
+F 45 Estrid
+I 53 Floki
+I 90 Thorfinn
+I 12 Snake
+I 78 Askeladd
+F 40
+E 40
+
+
