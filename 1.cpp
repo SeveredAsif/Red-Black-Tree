@@ -4,7 +4,7 @@ using namespace std;
 int main()
 {
     freopen("SampleIO/input.txt", "r", stdin);
-    // freopen("output.txt", "w", stdout);
+    //  freopen("output.txt", "w", stdout);
     RBT rbt;
     while (1)
     {
@@ -19,9 +19,10 @@ int main()
             x->left = rbt.TNULL;
             x->right = rbt.TNULL;
             rbt.insert(x);
-            string p = rbt.print(rbt.root);
+            rbt.print(rbt.root);
+            cout << endl;
             // cout<<rbt.root->val<<endl;
-            cout << p << endl;
+            // cout << p << endl;
         }
         else if (s == "E")
         {
@@ -31,9 +32,11 @@ int main()
             if (x == nullptr)
                 cout << key << " Not found" << endl;
             else
+            {
                 rbt.deleteNode(key);
-            string p = rbt.print(rbt.root);
-            cout << p << endl;
+                rbt.print(rbt.root);
+            }
+            // cout << p << endl;
         }
         else if (s == "Em")
         {
@@ -60,19 +63,19 @@ int main()
         }
         else if (s == "S")
         {
-            cout << rbt.height(rbt.root) << endl;
+            cout << rbt.sizee() << endl;
         }
         else if (s == "Itr")
         {
-            string p = rbt.inOrderHelper(rbt.root);
-            cout << p << endl;
+            rbt.inOrderHelper(rbt.root);
         }
         else if (s == "Clr")
         {
-            int a = rbt.clear(rbt.root);
+            int a = rbt.clear();
             if (a == 1)
             {
                 cout << "successful" << endl;
+                // cout<<rbt.sizee()<<endl;
             }
             else
             {

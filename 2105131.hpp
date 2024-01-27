@@ -33,30 +33,21 @@ class RBT
 public:
     Node *root;
     Node *TNULL;
+    int sizeTree;
     RBT()
     {
-        cout << "RBT" << endl;
+        // cout << "RBT" << endl;
         TNULL = new Node;
         TNULL->color = BLACK;
         TNULL->left = nullptr;
         TNULL->right = nullptr;
         root = TNULL;
-        cout << "RBT end" << endl;
+        sizeTree = 0;
+        // cout << "RBT end" << endl;
     }
-    int height(Node *x)
+    int sizee()
     {
-        if (x == TNULL)
-            return 0;
-        else
-        {
-            int lheight = height(x->left);
-            int rheight = height(x->right);
-
-            if (lheight > rheight)
-                return (lheight + 1);
-            else
-                return (rheight + 1);
-        }
+        return sizeTree;
     }
     void leftRotate(Node *x)
     {
@@ -94,6 +85,13 @@ public:
     void insert(Node *z)
     {
         // cout << z->val << endl;
+        Node *temp = find(z->val);
+        if (temp != nullptr)
+        {
+            temp->contains = z->contains;
+            return;
+        }
+        sizeTree++;
         Node *y = nullptr;
         Node *x = root;
         while (x != TNULL)
@@ -201,7 +199,7 @@ public:
 
     void transplant(Node *u, Node *v)
     {
-        cout << "transplant" << endl;
+        // cout << "transplant" << endl;
         if (u->parent == nullptr)
         {
             root = v;
@@ -215,13 +213,22 @@ public:
 
         // if (v != nullptr)          // Ensure v is not null before accessing its parent
         v->parent = u->parent; // Update v's parent
-        cout << "transplant end" << endl;
+        // cout << "transplant end" << endl;
     }
 
     Node *minimum(Node *x)
     {
         while (/*x != nullptr &&*/ x->left != TNULL)
             x = x->left;
+        return x;
+    }
+
+    Node *maximum(Node *x)
+    {
+        while (x->right != TNULL)
+        {
+            x = x->right;
+        }
         return x;
     }
 
@@ -242,7 +249,7 @@ public:
 
     void deleteFix(Node *x)
     {
-        cout << "deleteFix" << endl;
+        // cout << "deleteFix" << endl;
         while (x != root && x->color == BLACK)
         {
             if (x == x->parent->left)
@@ -309,20 +316,22 @@ public:
             }
         }
         x->color = BLACK;
-        cout << "deleteFix end" << endl;
+        // cout << "deleteFix end" << endl;
     }
 
     void deleteNode(int data)
     {
+        if (sizeTree == 0)
+            return;
+        sizeTree--;
         Delete(this->root, data);
     }
 
     void Delete(Node *node, int key)
     {
         Node *z = TNULL;
-        Node* x;
-        Node * y;
-        cout << "deleting " << endl;
+        Node *x;
+        Node *y;
 
         while (node != TNULL)
         {
@@ -342,7 +351,8 @@ public:
         }
         if (z == TNULL)
         {
-            cout << "Key not found in the tree" << endl;
+            // Key not found in the tree
+            cout << key << " Not found" << endl;
             return;
         }
         y = z;
@@ -360,81 +370,95 @@ public:
         }
         else
         {
-            y = minimum(z->right);
+            y = maximum(z->left); // Change minimum to maximum
             y_original_color = y->color;
-            x = y->right;
+            x = y->left;
             if (y->parent == z)
             {
                 x->parent = y;
             }
             else
             {
-                transplant(y, y->right);
-                y->right = z->right;
-                y->right->parent = y;
+                transplant(y, y->left);
+                y->left = z->left;
+                y->left->parent = y;
             }
             transplant(z, y);
-            y->left = z->left;
-            y->left->parent = y;
+            y->right = z->right;
+            y->right->parent = y;
             y->color = z->color;
         }
 
         delete z;
 
-        // Fix the RB tree properties
-        cout << y_original_color << endl;
-        cout << BLACK << endl;
         if (y_original_color == BLACK)
         {
-            cout << "Entering deleteFix" << endl;
             deleteFix(x);
         }
     }
 
-    string inOrderHelper(Node *node)
+    void inOrderHelper(Node *node)
     {
-        ostringstream string;
         if (node != TNULL)
         {
             inOrderHelper(node->left);
-            string << node->val << "⇒" << node->contains << endl;
+            if (node->color == RED)
+            {
+                cout << dye::red(node->val) << "=>" << dye::red(node->contains) << endl;
+            }
+            else
+            {
+                cout << node->val << "=>" << node->contains << endl;
+            }
             inOrderHelper(node->right);
         }
     }
 
-    int clear(Node *root)
+    int clearr(Node *currentNode)
     {
-        if (root == TNULL)
+        if (currentNode == TNULL)
             return 0;
-        clear(root->left);
-        clear(root->right);
-        delete root;
+
+        clearr(currentNode->left);
+        clearr(currentNode->right);
+
+        // Delete the current node and set parent pointers to TNULL
+        if (currentNode->parent != nullptr)
+        {
+            if (currentNode == currentNode->parent->left)
+                currentNode->parent->left = TNULL;
+            else
+                currentNode->parent->right = TNULL;
+        }
+
+        delete currentNode;
         return 1;
     }
 
-    std::string print(Node *root)
+    int clear()
+    {
+        this->sizeTree = 0;
+        int a = clearr(root);
+        return a;
+    }
+
+    void print(Node *root)
     {
         std::ostringstream string;
         if (root == TNULL)
         {
-            return "";
+            return;
         }
         else if (root->left == TNULL && root->right == TNULL)
         {
             if (root->color == RED)
             {
-                string << dye::red(root->val);
-                string << dye::red("_");
-                string << dye::red(root->contains);
                 cout << dye::red(root->val);
                 cout << dye::red("_");
                 cout << dye::red(root->contains);
             }
             else
             {
-                string << root->val;
-                string << "_";
-                string << root->contains;
                 cout << root->val;
                 cout << "_";
                 cout << root->contains;
@@ -444,78 +468,59 @@ public:
         {
             if (root->color == RED)
             {
-                string << dye::red(root->val);
-                string << dye::red("_");
-                string << dye::red(root->contains);
                 cout << dye::red(root->val);
                 cout << dye::red("_");
                 cout << dye::red(root->contains);
             }
             else
             {
-                string << root->val;
-                string << "_";
-                string << root->contains;
                 cout << root->val;
                 cout << "_";
                 cout << root->contains;
             }
-            string << "(,";
-            string << print(root->right);
-            string << ")";
+            cout << "(,";
+            /*cout << */ print(root->right);
+            cout << ")";
         }
         else if (root->left != TNULL && root->right == TNULL)
         {
             if (root->color == RED)
             {
-                string << dye::red(root->val);
-                string << dye::red("_");
-                string << dye::red(root->contains);
                 cout << dye::red(root->val);
                 cout << dye::red("_");
                 cout << dye::red(root->contains);
             }
             else
             {
-                string << root->val;
-                string << "_";
-                string << root->contains;
                 cout << root->val;
                 cout << "_";
                 cout << root->contains;
             }
-            string << "(";
-            string << print(root->left);
-            string << ",";
-            string << ")";
+            cout << "(";
+            /*cout << */ print(root->left);
+            cout << ",";
+            cout << ")";
         }
         else if (root->left != TNULL && root->right != TNULL)
         {
             if (root->color == RED)
             {
-                string << dye::red(root->val);
-                string << dye::red("_");
-                string << dye::red(root->contains);
                 cout << dye::red(root->val);
                 cout << dye::red("_");
                 cout << dye::red(root->contains);
             }
             else
             {
-                string << root->val;
-                string << "_";
-                string << root->contains;
                 cout << root->val;
                 cout << "_";
                 cout << root->contains;
             }
-            string << "(";
-            string << print(root->left);
-            string << ",";
-            string << print(root->right);
-            string << ")";
+            cout << "(";
+            /* cout << */ print(root->left);
+            cout << ",";
+            /* cout << */ print(root->right);
+            cout << ")";
             // std::cout << dye::aqua("Hello, World!") << std::endl;
         }
-        return string.str();
     }
 };
